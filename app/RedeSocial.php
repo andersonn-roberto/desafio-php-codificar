@@ -14,20 +14,23 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Contem os dados dos deputados
+ * Contem os dados das redes sociais
  *
  * @category PHP
  *
  * @author Anderson Roberto de Oliveira <andersonn.roberto@gmail.com>
  */
-class Deputado extends Model
+class RedeSocial extends Model
 {
     protected $fillable = [
         'id',
-        'nome',
-        'partido',
-        'tagLocalizacao'
+        'nome'
     ];
 
-    protected $table = 'deputados';
+    protected $table = 'redes_sociais';
+
+    public function getRedesSociaisMaisUtilizadas()
+    {
+        return json_encode($this->select('nome', \DB::raw('COUNT(1) AS count'))->groupBy('nome')->orderBy('count', 'desc')->get());
+    }
 }

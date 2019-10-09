@@ -11,6 +11,7 @@
 
 use App\Deputado;
 use App\DetalheVerbaIndenizatoria;
+use App\Support\HttpClient;
 use App\VerbaIndenizatoria;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -44,9 +45,7 @@ class VerbaIndenizatoriaSeeder extends Seeder
      */
     private function _createVerbasIndenizatoriasEDetalhes()
     {
-        // Não utilizei o plugin GuzzleHttp pois apresentava erro: cURL error 56: Recv failure: Connection was reset (see http://curl.haxx.se/libcurl/c/libcurl-errors.html
-
-        // $client = new GuzzleHttp\Client();
+        $client = new HttpClient();
         $deputados = Deputado::all();
 
         foreach ($deputados as $deputado) {
@@ -57,11 +56,8 @@ class VerbaIndenizatoriaSeeder extends Seeder
 
                 $this->command->info("Processando deputado $deputado_id no ano de 2017 e mes $mes");
 
-                // $res = $client->request('GET', $requestUrl, ['version' => 1.0]);
-
-                // $verbas = json_decode($res->getBody()->getContents(), true);
-
-                $verbas = $this->_getJson($requestUrl);
+                $res = $client->getJson($requestUrl);
+                $verbas = json_decode($res, true);
 
                 foreach ($verbas['list'] as $verba) {
                     $modelVerba = new VerbaIndenizatoria();
@@ -92,28 +88,5 @@ class VerbaIndenizatoriaSeeder extends Seeder
                 }
             }
         }
-    }
-
-    /**
-     * Efetua um request GET e retorna um JSON object
-     *
-     * @param string $json_url
-     *
-     * @return mixed
-     */
-    private function _getJson($json_url)
-    {
-        $ch = curl_init($json_url);
-
-        $options = array(
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER => array("Content-type: application/json")
-        );
-
-        curl_setopt_array($ch, $options);
-
-        $result = curl_exec($ch);
-
-        return json_decode($result, true);
     }
 }

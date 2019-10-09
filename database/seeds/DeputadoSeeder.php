@@ -10,6 +10,7 @@
  */
 
 use App\Deputado;
+use App\Support\HttpClient;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -41,10 +42,10 @@ class DeputadoSeeder extends Seeder
      */
     private function _createDeputados()
     {
-        $client = new GuzzleHttp\Client();
-        $res = $client->request('GET', 'http://dadosabertos.almg.gov.br/ws/deputados/em_exercicio', ['query' => ['formato' => 'json']]);
+        $client = new HttpClient();
+        $res = $client->getJson('http://dadosabertos.almg.gov.br/ws/deputados/em_exercicio?formato=json');
 
-        $deputados = json_decode($res->getBody()->getContents(), true);
+        $deputados = json_decode($res, true);
         foreach ($deputados['list'] as $deputado) {
             $modelDeputado = new Deputado();
             $modelDeputado->id = $deputado['id'];

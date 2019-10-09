@@ -31,4 +31,13 @@ class VerbaIndenizatoria extends Model
     ];
 
     protected $table = 'verbas_indenizatorias';
+
+    public function getDeputadosMaioresReembolsos()
+    {
+        return json_encode(
+            $this->join('deputados', 'verbas_indenizatorias.idDeputado', '=', 'deputados.id')
+                ->select('nome', \DB::raw('SUM(valor) AS total'))
+                ->groupBy('nome')->orderBy('total', 'desc')->take(5)->get()
+        );
+    }
 }

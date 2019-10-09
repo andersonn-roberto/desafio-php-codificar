@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(DeputadoSeeder::class);
+        $this->call(RedeSocialSeeder::class);
         $this->call(VerbaIndenizatoriaSeeder::class);
     }
 }

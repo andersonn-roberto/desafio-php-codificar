@@ -15,4 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/deputados', 'DeputadoController@index');
+Route::get('/redes-sociais', 'DeputadoController@getRedesSociaisMaisUtilizadas');
+
+Route::get('/maiores-reembolsos', 'DeputadoController@getDeputadosMaioresReembolsos');
